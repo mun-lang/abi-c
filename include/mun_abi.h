@@ -6,12 +6,12 @@
 /** <div rustbindgen derive="PartialEq"> */
 typedef struct
 {
-    uint8_t b[16];
+    const uint8_t b[16];
 } MunGuid;
 
 typedef struct
 {
-    MunGuid guid;
+    const MunGuid guid;
     const char *name;
 } MunTypeInfo;
 
@@ -29,15 +29,37 @@ typedef struct
     const char *name;
     const MunTypeInfo *arg_types;
     const MunTypeInfo *return_type;
+    const uint16_t num_arg_types;
+    const MunPrivacy_t privacy;
+} MunFunctionSignature;
+
+/** <div rustbindgen derive="Clone"> */
+typedef struct
+{
+    const MunFunctionSignature signature;
     const void *fn_ptr;
-    uint16_t num_arg_types;
-    MunPrivacy_t privacy;
 } MunFunctionInfo;
 
 typedef struct
 {
+    const char *path;
     const MunFunctionInfo *functions;
-    uint32_t num_functions;
+    const uint32_t num_functions;
 } MunModuleInfo;
+
+typedef struct
+{
+    const MunFunctionSignature *signatures;
+    const void **fn_ptrs;
+    const uint32_t num_entries;
+} MunDispatchTable;
+
+typedef struct
+{
+    const MunModuleInfo symbols;
+    MunDispatchTable dispatch_table;
+    const char *const *dependencies;
+    const uint32_t num_dependencies;
+} MunAssemblyInfo;
 
 #endif
