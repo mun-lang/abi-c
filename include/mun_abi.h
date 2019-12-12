@@ -79,6 +79,24 @@ typedef struct
 } MunFunctionInfo;
 
 /**
+ * Represents a struct declaration.
+ * 
+ * <div rustbindgen derive="Clone" derive="Debug"></div>
+ */
+typedef struct
+{
+    /// Struct name
+    const char *name;
+    /// Struct fields' information
+    const MunTypeInfo *field_types;
+    // TODO: Field accessibility levels
+    // const MunPrivacy_t *field_privacies;
+    /// Number of fields
+    const uint16_t num_fields;
+    // TODO: Add struct accessibility level
+} MunStructInfo;
+
+/**
  * Represents a module declaration.
  * 
  * <div rustbindgen derive="Debug"></div>
@@ -91,6 +109,10 @@ typedef struct
     const MunFunctionInfo *functions;
     /// Number of module functions
     const uint32_t num_functions;
+    /// Module structs
+    const MunStructInfo *structs;
+    /// Number of module structs
+    const uint32_t num_structs;
 } MunModuleInfo;
 
 /**
