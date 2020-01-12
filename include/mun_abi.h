@@ -87,8 +87,14 @@ typedef struct
 {
     /// Struct name
     const char *name;
+    /// Struct fields' names
+    const char *const *field_names;
     /// Struct fields' information
     const MunTypeInfo *field_types;
+    /// Struct fields' offsets
+    const uint16_t *field_offsets;
+    /// Struct fields' sizes (in bytes)
+    const uint16_t *field_sizes;
     // TODO: Field accessibility levels
     // const MunPrivacy_t *field_privacies;
     /// Number of fields
