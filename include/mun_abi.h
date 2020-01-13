@@ -17,6 +17,24 @@ typedef struct
 } MunGuid;
 
 /**
+ * Represents a group of types that illicit the same characteristics.
+ * 
+ * <div rustbindgen hide></div>
+ */
+typedef enum
+{
+    /// A fundamental type (i.e. `()`, `bool`, `float`, `int`, etc.)
+    MunFundamentalTypes = 0,
+    /// A struct type (i.e. record, tuple, or unit structs)
+    MunStructTypes = 1
+} MunTypeGroup;
+
+/**
+ * <div rustbindgen hide></div>
+ */
+typedef uint8_t MunTypeGroup_t;
+
+/**
  * Represents the type declaration for a value type.
  *
  * TODO: add support for structs, polymorphism, enumerations, type parameters, generic type definitions, and constructed generic types.
@@ -29,10 +47,14 @@ typedef struct
     const MunGuid guid;
     /// Type name
     const char *name;
+    /// Type group
+    const MunTypeGroup_t group;
 } MunTypeInfo;
 
-/*
+/**
  * Represents the accessibility level of a function, module, or type.
+ * 
+ * <div rustbindgen hide></div>
  */
 typedef enum
 {
@@ -42,6 +64,9 @@ typedef enum
     MunPrivacyPrivate = 1
 } MunPrivacy;
 
+/**
+ * <div rustbindgen hide></div>
+ */
 typedef uint8_t MunPrivacy_t;
 
 /**
