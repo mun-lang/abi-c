@@ -52,6 +52,29 @@ typedef struct
 } MunTypeInfo;
 
 /**
+ * Represents the kind of memory management a struct uses.
+ * 
+ * <div rustbindgen hide></div>
+ */
+typedef enum
+{
+    /// A garbage collected struct is allocated on the heap and uses reference semantics when passed
+    /// around.
+    MunStructMemoryKindGC,
+
+    /// A value struct is allocated on the stack and uses value semantics when passed around.
+    ///
+    /// NOTE: When a value struct is used in an external API, a wrapper is created that _pins_ the
+    /// value on the heap. The heap-allocated value needs to be *manually deallocated*!
+    MunStructMemoryKindValue,
+} MunStructMemoryKind;
+
+/**
+ * <div rustbindgen hide></div>
+ */
+typedef uint8_t MunStructMemoryKind_t;
+
+/**
  * Represents the accessibility level of a function, module, or type.
  * 
  * <div rustbindgen hide></div>
@@ -125,6 +148,8 @@ typedef struct
     /// Number of fields
     const uint16_t num_fields;
     // TODO: Add struct accessibility level
+    /// Struct memory kind
+    const MunStructMemoryKind_t memory_kind;
 } MunStructInfo;
 
 /**
