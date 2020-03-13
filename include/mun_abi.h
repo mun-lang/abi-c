@@ -148,6 +148,8 @@ typedef struct
     /// Number of fields
     const uint16_t num_fields;
     // TODO: Add struct accessibility level
+    /// Struct memory alignment
+    const uint16_t alignment;
     /// Struct memory kind
     const MunStructMemoryKind_t memory_kind;
 } MunStructInfo;
