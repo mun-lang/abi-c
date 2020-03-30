@@ -18,7 +18,7 @@ typedef struct
 
 /**
  * Represents a group of types that illicit the same characteristics.
- * 
+ *
  * <div rustbindgen hide></div>
  */
 typedef enum
@@ -38,7 +38,7 @@ typedef uint8_t MunTypeGroup_t;
  * Represents the type declaration for a value type.
  *
  * TODO: add support for structs, polymorphism, enumerations, type parameters, generic type definitions, and constructed generic types.
- * 
+ *
  * <div rustbindgen derive="Debug"></div>
  */
 typedef struct
@@ -47,13 +47,17 @@ typedef struct
     const MunGuid guid;
     /// Type name
     const char *name;
+    /// The exact size of the type in bits without any padding
+    uint32_t size_in_bits;
+    /// The alignment of the type
+    uint8_t alignment;
     /// Type group
     const MunTypeGroup_t group;
 } MunTypeInfo;
 
 /**
  * Represents the kind of memory management a struct uses.
- * 
+ *
  * <div rustbindgen hide></div>
  */
 typedef enum
@@ -76,7 +80,7 @@ typedef uint8_t MunStructMemoryKind_t;
 
 /**
  * Represents the accessibility level of a function, module, or type.
- * 
+ *
  * <div rustbindgen hide></div>
  */
 typedef enum
@@ -94,7 +98,7 @@ typedef uint8_t MunPrivacy_t;
 
 /**
  * Represents a function signature.
- * 
+ *
  * <div rustbindgen derive="Clone" derive="Debug"></div>
  */
 typedef struct
@@ -128,7 +132,7 @@ typedef struct
 
 /**
  * Represents a struct declaration.
- * 
+ *
  * <div rustbindgen derive="Clone" derive="Debug"></div>
  */
 typedef struct
@@ -141,22 +145,18 @@ typedef struct
     const MunTypeInfo *const *field_types;
     /// Struct fields' offsets
     const uint16_t *field_offsets;
-    /// Struct fields' sizes (in bytes)
-    const uint16_t *field_sizes;
     // TODO: Field accessibility levels
     // const MunPrivacy_t *field_privacies;
     /// Number of fields
     const uint16_t num_fields;
     // TODO: Add struct accessibility level
-    /// Struct memory alignment
-    const uint16_t alignment;
     /// Struct memory kind
     const MunStructMemoryKind_t memory_kind;
 } MunStructInfo;
 
 /**
  * Represents a module declaration.
- * 
+ *
  * <div rustbindgen derive="Debug"></div>
  */
 typedef struct
