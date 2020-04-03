@@ -26,7 +26,9 @@ typedef enum
     /// A fundamental type (i.e. `()`, `bool`, `float`, `int`, etc.)
     MunFundamentalTypes = 0,
     /// A struct type (i.e. record, tuple, or unit structs)
-    MunStructTypes = 1
+    MunStructTypes = 1,
+    /// An array type
+    MunArrayTypes = 2,
 } MunTypeGroup;
 
 /**
@@ -151,6 +153,17 @@ typedef struct
     /// Struct memory kind
     const MunStructMemoryKind_t memory_kind;
 } MunStructInfo;
+
+/**
+ * Represents an array declaration.
+ *
+ * <div rustbindgen derive="Clone" derive="Debug"></div>
+ */
+typedef struct
+{
+    /// The type of the elements the array stores, e.g.: [T] -> an array that stores T's
+    const MunTypeInfo *element_type;
+} MunArrayInfo;
 
 /**
  * Represents a module declaration.
