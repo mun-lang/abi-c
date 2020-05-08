@@ -87,6 +87,7 @@ typedef enum
 {
     /// Publicly (and privately) accessible
     MunPrivacyPublic = 0,
+
     /// Privately accessible
     MunPrivacyPrivate = 1
 } MunPrivacy;
@@ -103,20 +104,31 @@ typedef uint8_t MunPrivacy_t;
  */
 typedef struct
 {
-    /// Function name
-    const char *name;
     /// Argument types
     const MunTypeInfo *const *arg_types;
     /// Optional return type
     const MunTypeInfo *return_type;
     /// Number of argument types
     const uint16_t num_arg_types;
-    /// Function accessibility level
-    const MunPrivacy_t privacy;
 } MunFunctionSignature;
 
 /**
- * Represents a function declaration.
+ * Represents a function prototype. A function prototype contains the name,
+ * type signature, but not an implementation.
+ *
+ * <div rustbindgen derive="Clone" derive="Debug"></div>
+ */
+typedef struct
+{
+  /// Function name
+  const char *name;
+  /// The type signature of the function
+  const MunFunctionSignature signature;
+} MunFunctionPrototype;
+
+/**
+ * Represents a function definition. A function definition contains the name,
+ * type signature, and a pointer to the implementation.
  *
  * `fn_ptr` can be used to call the declared function.
  *
@@ -124,11 +136,11 @@ typedef struct
  */
 typedef struct
 {
-    /// Function signature
-    const MunFunctionSignature signature;
+    /// Function prototype
+    const MunFunctionPrototype prototype;
     /// Function pointer
     const void *fn_ptr;
-} MunFunctionInfo;
+} MunFunctionDefinition;
 
 /**
  * Represents a struct declaration.
@@ -162,7 +174,7 @@ typedef struct
     /// Module path
     const char *path;
     /// Module functions
-    const MunFunctionInfo *functions;
+    const MunFunctionDefinition *functions;
     /// Number of module functions
     const uint32_t num_functions;
     /// Module types
@@ -181,7 +193,7 @@ typedef struct
 typedef struct
 {
     /// Function signatures
-    const MunFunctionSignature *signatures;
+    const MunFunctionPrototype *prototypes;
     /// Function pointers
     const void **fn_ptrs;
     /// Number of functions
@@ -190,7 +202,7 @@ typedef struct
 
 /**
  * Represents an assembly declaration.
- * 
+ *
  * <div rustbindgen derive="Debug"></div>
  */
 typedef struct
