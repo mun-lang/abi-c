@@ -36,32 +36,68 @@ typedef uint8_t MunStructMemoryKind;
 #endif // __cplusplus
 
 /**
- * Represents a group of types that illicit the same characteristics.
- */
-enum MunTypeGroup
-#ifdef __cplusplus
-  : uint8_t
-#endif // __cplusplus
- {
-    /**
-     * Fundamental types (i.e. `()`, `bool`, `float`, `int`, etc.)
-     */
-    FundamentalTypes = 0,
-    /**
-     * Struct types (i.e. record, tuple, or unit structs)
-     */
-    StructTypes = 1,
-};
-#ifndef __cplusplus
-typedef uint8_t MunTypeGroup;
-#endif // __cplusplus
-
-/**
  * Represents a globally unique identifier (GUID).
  */
 typedef struct {
     uint8_t _0[16];
 } MunGuid;
+
+/**
+ * Represents a struct declaration.
+ */
+typedef struct {
+    /**
+     * Struct fields' names
+     */
+    const char *const *field_names;
+    /**
+     * Struct fields' information
+     */
+    const MunTypeInfo *const *field_types;
+    /**
+     * Struct fields' offsets
+     */
+    const uint16_t *field_offsets;
+    /**
+     * Number of fields
+     */
+    uint16_t num_fields;
+    /**
+     * Struct memory kind
+     */
+    MunStructMemoryKind memory_kind;
+} MunStructInfo;
+
+/**
+ * Contains data specific to a group of types that illicit the same characteristics.
+ */
+enum MunTypeInfoData_Tag
+#ifdef __cplusplus
+  : uint8_t
+#endif // __cplusplus
+ {
+    /**
+     * Primitive types (i.e. `()`, `bool`, `float`, `int`, etc.)
+     */
+    Primitive,
+    /**
+     * Struct types (i.e. record, tuple, or unit structs)
+     */
+    Struct,
+};
+#ifndef __cplusplus
+typedef uint8_t MunTypeInfoData_Tag;
+#endif // __cplusplus
+
+typedef struct {
+    MunTypeInfoData_Tag tag;
+    MunStructInfo _0;
+} MunStruct_Body;
+
+typedef union {
+    MunTypeInfoData_Tag tag;
+    MunStruct_Body struct_;
+} MunTypeInfoData;
 
 /**
  * Represents the type declaration for a value type.
@@ -89,7 +125,7 @@ typedef struct {
     /**
      * Type group
      */
-    MunTypeGroup group;
+    MunTypeInfoData data;
 } MunTypeInfo;
 
 /**
@@ -209,31 +245,5 @@ typedef struct {
      */
     uint32_t num_dependencies;
 } MunAssemblyInfo;
-
-/**
- * Represents a struct declaration.
- */
-typedef struct {
-    /**
-     * Struct fields' names
-     */
-    const char *const *field_names;
-    /**
-     * Struct fields' information
-     */
-    const MunTypeInfo *const *field_types;
-    /**
-     * Struct fields' offsets
-     */
-    const uint16_t *field_offsets;
-    /**
-     * Number of fields
-     */
-    uint16_t num_fields;
-    /**
-     * Struct memory kind
-     */
-    MunStructMemoryKind memory_kind;
-} MunStructInfo;
 
 #endif /* MUN_ABI_H_ */
