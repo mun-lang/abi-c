@@ -1,7 +1,7 @@
 #ifndef MUN_ABI_H_
 #define MUN_ABI_H_
 
-/* Generated with cbindgen:0.14.2 */
+/* Generated with cbindgen:0.16.0 */
 
 #include <stdint.h>
 
@@ -38,14 +38,14 @@ typedef uint8_t MunStructMemoryKind;
 /**
  * Represents a globally unique identifier (GUID).
  */
-typedef struct {
+typedef struct MunGuid {
     uint8_t _0[16];
 } MunGuid;
 
 /**
  * Represents a struct declaration.
  */
-typedef struct {
+typedef struct MunStructInfo {
     /**
      * Struct fields' names
      */
@@ -53,7 +53,7 @@ typedef struct {
     /**
      * Struct fields' information
      */
-    const MunTypeInfo *const *field_types;
+    const struct MunTypeInfo *const *field_types;
     /**
      * Struct fields' offsets
      */
@@ -89,14 +89,12 @@ enum MunTypeInfoData_Tag
 typedef uint8_t MunTypeInfoData_Tag;
 #endif // __cplusplus
 
-typedef struct {
+typedef union MunTypeInfoData {
     MunTypeInfoData_Tag tag;
-    MunStructInfo _0;
-} MunStruct_Body;
-
-typedef union {
-    MunTypeInfoData_Tag tag;
-    MunStruct_Body struct_;
+    struct {
+        MunTypeInfoData_Tag struct_tag;
+        struct MunStructInfo struct_;
+    };
 } MunTypeInfoData;
 
 /**
@@ -105,11 +103,11 @@ typedef union {
  * TODO: add support for polymorphism, enumerations, type parameters, generic type definitions, and
  * constructed generic types.
  */
-typedef struct {
+typedef struct MunTypeInfo {
     /**
      * Type GUID
      */
-    MunGuid guid;
+    struct MunGuid guid;
     /**
      * Type name
      */
@@ -125,21 +123,21 @@ typedef struct {
     /**
      * Type group
      */
-    MunTypeInfoData data;
+    union MunTypeInfoData data;
 } MunTypeInfo;
 
 /**
  * Represents a function signature.
  */
-typedef struct {
+typedef struct MunFunctionSignature {
     /**
      * Argument types
      */
-    const MunTypeInfo *const *arg_types;
+    const struct MunTypeInfo *const *arg_types;
     /**
      * Optional return type
      */
-    const MunTypeInfo *return_type;
+    const struct MunTypeInfo *return_type;
     /**
      * Number of argument types
      */
@@ -150,7 +148,7 @@ typedef struct {
  * Represents a function prototype. A function prototype contains the name, type signature, but
  * not an implementation.
  */
-typedef struct {
+typedef struct MunFunctionPrototype {
     /**
      * Function name
      */
@@ -158,7 +156,7 @@ typedef struct {
     /**
      * The type signature of the function
      */
-    MunFunctionSignature signature;
+    struct MunFunctionSignature signature;
 } MunFunctionPrototype;
 
 /**
@@ -167,11 +165,11 @@ typedef struct {
  *
  * `fn_ptr` can be used to call the declared function.
  */
-typedef struct {
+typedef struct MunFunctionDefinition {
     /**
      * Function prototype
      */
-    MunFunctionPrototype prototype;
+    struct MunFunctionPrototype prototype;
     /**
      * Function pointer
      */
@@ -181,7 +179,7 @@ typedef struct {
 /**
  * Represents a module declaration.
  */
-typedef struct {
+typedef struct MunModuleInfo {
     /**
      * Module path
      */
@@ -189,11 +187,11 @@ typedef struct {
     /**
      * Module functions
      */
-    const MunFunctionDefinition *functions;
+    const struct MunFunctionDefinition *functions;
     /**
      * Module types
      */
-    const MunTypeInfo *const *types;
+    const struct MunTypeInfo *const *types;
     /**
      * Number of module functions
      */
@@ -209,11 +207,11 @@ typedef struct {
  *
  * Function signatures and pointers are stored separately for cache efficiency.
  */
-typedef struct {
+typedef struct MunDispatchTable {
     /**
      * Function signatures
      */
-    const MunFunctionPrototype *prototypes;
+    const struct MunFunctionPrototype *prototypes;
     /**
      * Function pointers
      */
@@ -227,15 +225,15 @@ typedef struct {
 /**
  * Represents an assembly declaration.
  */
-typedef struct {
+typedef struct MunAssemblyInfo {
     /**
      * Symbols of the top-level module
      */
-    MunModuleInfo symbols;
+    struct MunModuleInfo symbols;
     /**
      * Dispatch table
      */
-    MunDispatchTable dispatch_table;
+    struct MunDispatchTable dispatch_table;
     /**
      * Paths to assembly dependencies
      */
