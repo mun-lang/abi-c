@@ -1,7 +1,7 @@
 #ifndef MUN_ABI_H_
 #define MUN_ABI_H_
 
-/* Generated with cbindgen:0.14.2 */
+/* Generated with cbindgen:0.16.0 */
 
 #include <stdint.h>
 
@@ -36,32 +36,66 @@ typedef uint8_t MunStructMemoryKind;
 #endif // __cplusplus
 
 /**
- * Represents a group of types that illicit the same characteristics.
+ * Represents a globally unique identifier (GUID).
  */
-enum MunTypeGroup
+typedef struct MunGuid {
+    uint8_t _0[16];
+} MunGuid;
+
+/**
+ * Represents a struct declaration.
+ */
+typedef struct MunStructInfo {
+    /**
+     * Struct fields' names
+     */
+    const char *const *field_names;
+    /**
+     * Struct fields' information
+     */
+    const struct MunTypeInfo *const *field_types;
+    /**
+     * Struct fields' offsets
+     */
+    const uint16_t *field_offsets;
+    /**
+     * Number of fields
+     */
+    uint16_t num_fields;
+    /**
+     * Struct memory kind
+     */
+    MunStructMemoryKind memory_kind;
+} MunStructInfo;
+
+/**
+ * Contains data specific to a group of types that illicit the same characteristics.
+ */
+enum MunTypeInfoData_Tag
 #ifdef __cplusplus
   : uint8_t
 #endif // __cplusplus
  {
     /**
-     * Fundamental types (i.e. `()`, `bool`, `float`, `int`, etc.)
+     * Primitive types (i.e. `()`, `bool`, `float`, `int`, etc.)
      */
-    FundamentalTypes = 0,
+    Primitive,
     /**
      * Struct types (i.e. record, tuple, or unit structs)
      */
-    StructTypes = 1,
+    Struct,
 };
 #ifndef __cplusplus
-typedef uint8_t MunTypeGroup;
+typedef uint8_t MunTypeInfoData_Tag;
 #endif // __cplusplus
 
-/**
- * Represents a globally unique identifier (GUID).
- */
-typedef struct {
-    uint8_t _0[16];
-} MunGuid;
+typedef union MunTypeInfoData {
+    MunTypeInfoData_Tag tag;
+    struct {
+        MunTypeInfoData_Tag struct_tag;
+        struct MunStructInfo struct_;
+    };
+} MunTypeInfoData;
 
 /**
  * Represents the type declaration for a value type.
@@ -69,11 +103,11 @@ typedef struct {
  * TODO: add support for polymorphism, enumerations, type parameters, generic type definitions, and
  * constructed generic types.
  */
-typedef struct {
+typedef struct MunTypeInfo {
     /**
      * Type GUID
      */
-    MunGuid guid;
+    struct MunGuid guid;
     /**
      * Type name
      */
@@ -89,21 +123,21 @@ typedef struct {
     /**
      * Type group
      */
-    MunTypeGroup group;
+    union MunTypeInfoData data;
 } MunTypeInfo;
 
 /**
  * Represents a function signature.
  */
-typedef struct {
+typedef struct MunFunctionSignature {
     /**
      * Argument types
      */
-    const MunTypeInfo *const *arg_types;
+    const struct MunTypeInfo *const *arg_types;
     /**
      * Optional return type
      */
-    const MunTypeInfo *return_type;
+    const struct MunTypeInfo *return_type;
     /**
      * Number of argument types
      */
@@ -114,7 +148,7 @@ typedef struct {
  * Represents a function prototype. A function prototype contains the name, type signature, but
  * not an implementation.
  */
-typedef struct {
+typedef struct MunFunctionPrototype {
     /**
      * Function name
      */
@@ -122,7 +156,7 @@ typedef struct {
     /**
      * The type signature of the function
      */
-    MunFunctionSignature signature;
+    struct MunFunctionSignature signature;
 } MunFunctionPrototype;
 
 /**
@@ -131,11 +165,11 @@ typedef struct {
  *
  * `fn_ptr` can be used to call the declared function.
  */
-typedef struct {
+typedef struct MunFunctionDefinition {
     /**
      * Function prototype
      */
-    MunFunctionPrototype prototype;
+    struct MunFunctionPrototype prototype;
     /**
      * Function pointer
      */
@@ -145,7 +179,7 @@ typedef struct {
 /**
  * Represents a module declaration.
  */
-typedef struct {
+typedef struct MunModuleInfo {
     /**
      * Module path
      */
@@ -153,11 +187,11 @@ typedef struct {
     /**
      * Module functions
      */
-    const MunFunctionDefinition *functions;
+    const struct MunFunctionDefinition *functions;
     /**
      * Module types
      */
-    const MunTypeInfo *const *types;
+    const struct MunTypeInfo *const *types;
     /**
      * Number of module functions
      */
@@ -173,11 +207,11 @@ typedef struct {
  *
  * Function signatures and pointers are stored separately for cache efficiency.
  */
-typedef struct {
+typedef struct MunDispatchTable {
     /**
      * Function signatures
      */
-    const MunFunctionPrototype *prototypes;
+    const struct MunFunctionPrototype *prototypes;
     /**
      * Function pointers
      */
@@ -191,15 +225,15 @@ typedef struct {
 /**
  * Represents an assembly declaration.
  */
-typedef struct {
+typedef struct MunAssemblyInfo {
     /**
      * Symbols of the top-level module
      */
-    MunModuleInfo symbols;
+    struct MunModuleInfo symbols;
     /**
      * Dispatch table
      */
-    MunDispatchTable dispatch_table;
+    struct MunDispatchTable dispatch_table;
     /**
      * Paths to assembly dependencies
      */
@@ -209,31 +243,5 @@ typedef struct {
      */
     uint32_t num_dependencies;
 } MunAssemblyInfo;
-
-/**
- * Represents a struct declaration.
- */
-typedef struct {
-    /**
-     * Struct fields' names
-     */
-    const char *const *field_names;
-    /**
-     * Struct fields' information
-     */
-    const MunTypeInfo *const *field_types;
-    /**
-     * Struct fields' offsets
-     */
-    const uint16_t *field_offsets;
-    /**
-     * Number of fields
-     */
-    uint16_t num_fields;
-    /**
-     * Struct memory kind
-     */
-    MunStructMemoryKind memory_kind;
-} MunStructInfo;
 
 #endif /* MUN_ABI_H_ */
