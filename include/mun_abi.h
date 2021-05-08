@@ -22,7 +22,7 @@ enum MunStructMemoryKind
      * A garbage collected struct is allocated on the heap and uses reference semantics when passed
      * around.
      */
-    GC,
+    Gc,
     /**
      * A value struct is allocated on the stack and uses value semantics when passed around.
      *
