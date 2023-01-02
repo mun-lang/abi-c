@@ -1,5 +1,9 @@
 # Mun ABI for C
 
+> **Warning**
+> 
+> The contents of this repository has been moved into the Mun monorepo at https://github.com/mun-lang/mun .
+
 C headers for the Mun ABI.
 
 ## License
